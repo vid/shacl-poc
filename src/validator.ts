@@ -44,11 +44,11 @@ my:LocationShape
 .
 `);
 
-  async getValidator() {
+  private async getValidator() {
     if (this.validator) {
       return this.validator;
     }
-    const stream = await parserN3.import(this.shapeTTL);
+    const stream = parserN3.import(this.shapeTTL);
     const ishapes = await getStream.array(stream);
 
     const shapes = ishapes;
@@ -56,6 +56,7 @@ my:LocationShape
     this.validator = validator;
     return validator;
   }
+
   async validate(formData) {
     const validator = await this.getValidator();
     const report = await validator.validate(formData);
@@ -66,9 +67,9 @@ my:LocationShape
     }
 
     // See https://www.w3.org/TR/shacl/#results-validation-result
-    return report.results.map((result, err) => {
-      return ['focusNode', 'message', 'path', 'severity', 'sourceConstraintComponent', 'sourceShape'].reduce((a, f) => ({ ...a, [f]: result[f] }), { result: err++ });
-    });
+    return report.results.map((result, err) =>
+      ['focusNode', 'message', 'path', 'severity', 'sourceConstraintComponent', 'sourceShape'].reduce((a, f) => ({ ...a, [f]: result[f] }), { result: err })
+    );
   }
 }
 async function loadDatasetFromFile(filePath) {
