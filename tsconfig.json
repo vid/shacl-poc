@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "strict": false,
+    "declaration": true,
+    "outDir": "lib",
+    "types": ["node", "jest"],
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "target": "es6",
+    "lib": ["dom", "es2018"]
+  },
+  "include": ["./src"],
+  "exclude": ["./node_modules"]
+}

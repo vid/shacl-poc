@@ -1,0 +1,23 @@
+@prefix ex: <http://example.com/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:one a schema:Event;
+  schema:name "First event" ;
+  schema:startDate "2021-01-28T20:00:002"^^xsd:dateTime;
+  schema:location "somewhere"
+.
+
+ex:two a schema:Event;
+  schema:name "Second Event";
+  schema:startDate "2021-01-28T20:00:002"^^xsd:dateTime;
+  schema:location "somewhere else"
+.
+
+ex:three a schema:Event;
+  schema:name "My amazing music event";
+  schema:startDate "2021-01-28T20:00:002"^^xsd:dateTime;
+  schema:location "somewhere"
+.
