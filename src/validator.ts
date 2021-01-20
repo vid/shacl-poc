@@ -1,16 +1,13 @@
-import fs from 'fs';
-
-import factory from 'rdf-ext';
-import ParserN3 from '@rdfjs/parser-n3';
 import SHACLValidator from 'rdf-validate-shacl';
-import str from 'string-to-stream';
-const getStream = require('get-stream');
+import factory from 'rdf-ext';
 
-const parserN3 = new ParserN3();
+import { loadN3FromString } from './util';
 
 export class Validator {
   validator = undefined;
-  shapeTTL = str(`@prefix dash: <http://datashapes.org/dash#> .
+
+  shapeTTL = `
+@prefix dash: <http://datashapes.org/dash#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema: <http://schema.org/> .
@@ -42,16 +39,13 @@ my:LocationShape
   sh:minCount 1 ;
   sh:maxCount 1 ;
 .
-`);
+`;
 
   private async getValidator() {
     if (this.validator) {
       return this.validator;
     }
-    const stream = parserN3.import(this.shapeTTL);
-    const ishapes = await getStream.array(stream);
-
-    const shapes = ishapes;
+    const shapes = await loadN3FromString(this.shapeTTL);
     const validator = new SHACLValidator(shapes, { factory });
     this.validator = validator;
     return validator;
@@ -71,9 +65,4 @@ my:LocationShape
       ['focusNode', 'message', 'path', 'severity', 'sourceConstraintComponent', 'sourceShape'].reduce((a, f) => ({ ...a, [f]: result[f] }), { result: err })
     );
   }
-}
-async function loadDatasetFromFile(filePath) {
-  const stream = fs.createReadStream(filePath);
-  const parser = new ParserN3({ factory });
-  return factory.dataset().import(parser.import(stream));
 }
