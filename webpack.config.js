@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
     mode: 'development',
@@ -21,7 +22,16 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['.ts', '.js', '.json', '.tsx']
+        extensions: ['.ts', '.js', '.json', '.tsx'],
+        fallback: {
+            "crypto": require.resolve("crypto-browserify"),
+            // "buffer": require.resolve("buffer/"),
+            // "util": require.resolve("util/"),
+            "stream": require.resolve("stream-browserify")
+        },
+        alias: {
+            'react-dom': '@hot-loader/react-dom'
+        }
     },
     output: {
         filename: 'bundle.js'
@@ -33,9 +43,20 @@ module.exports = {
         hot: true
     },
 
-    plugins: [new HtmlWebpackPlugin({
-        template: 'src/index.html',
-        hash: true, // This is useful for cache busting
-        filename: 'index.html'
-    })]
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: 'src/index.html',
+            hash: true, // This is useful for cache busting
+            filename: 'index.html'
+        }),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('development'),
+        }),
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+            process: 'process/browser',
+        }),
+    ],
+    externals: {
+    },
 }
