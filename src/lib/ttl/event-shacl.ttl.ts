@@ -1,4 +1,4 @@
-@prefix dash: <http://datashapes.org/dash#> .
+export const EventShacl = `@prefix dash: <http://datashapes.org/dash#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema: <http://schema.org/> .
@@ -16,6 +16,12 @@ my:NameShape
   #a sh:PropertyShape ;
   sh:path schema:name ;
   sh:datatype xsd:string ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:minLength 1;
+  sh:maxLength 72;
+  sh:description "Event name";
+  sh:order 1;
 .
 
 my:StartDateShape
@@ -23,6 +29,8 @@ my:StartDateShape
   sh:datatype xsd:dateTime ;
   sh:minCount 1 ;
   sh:maxCount 1 ;
+  sh:description "Start date";
+  sh:order 2;
 .
 
 my:LocationShape 
@@ -30,4 +38,9 @@ my:LocationShape
   sh:datatype xsd:string ;
   sh:minCount 1 ;
   sh:maxCount 1 ;
+  sh:minLength 4;
+  sh:maxLength 72;
+  sh:description "Location";
+  sh:order 3;
 . 
+`;

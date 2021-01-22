@@ -1,0 +1,95 @@
+body {
+  font-family: 'Google Sans', Roboto, Arial, sans-serif;
+}
+
+.form-notify {
+  padding: 5px;
+}
+
+/* form based on https://www.sanwebe.com/2014/08/css-html-forms-designs */
+
+.form-ul {
+  margin: 10px auto;
+  max-width: 400px;
+  padding: 20px 12px 10px 20px;
+  font: 13px 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+}
+.form-ul li {
+  padding: 0;
+  display: block;
+  list-style: none;
+  margin: 10px 0 0 0;
+}
+.form-ul label {
+  margin: 0 0 3px 0;
+  padding: 0px;
+  display: block;
+  font-weight: bold;
+}
+.form-ul input[type='text'],
+.form-ul input[type='date'],
+.form-ul input[type='datetime'],
+.form-ul input[type='number'],
+.form-ul input[type='search'],
+.form-ul input[type='time'],
+.form-ul input[type='url'],
+.form-ul input[type='email'],
+textarea,
+select {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  border: 1px solid #bebebe;
+  padding: 7px;
+  margin: 0px;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  outline: none;
+}
+.form-ul input[type='text']:focus,
+.form-ul input[type='date']:focus,
+.form-ul input[type='datetime']:focus,
+.form-ul input[type='number']:focus,
+.form-ul input[type='search']:focus,
+.form-ul input[type='time']:focus,
+.form-ul input[type='url']:focus,
+.form-ul input[type='email']:focus,
+.form-ul textarea:focus,
+.form-ul select:focus {
+  -moz-box-shadow: 0 0 8px #88d5e9;
+  -webkit-box-shadow: 0 0 8px #88d5e9;
+  box-shadow: 0 0 8px #88d5e9;
+  border: 1px solid #88d5e9;
+}
+.form-ul .field-divided {
+  width: 49%;
+}
+
+.form-ul .field-long {
+  width: 100%;
+}
+.form-ul .field-select {
+  width: 100%;
+}
+.form-ul .field-textarea {
+  height: 100px;
+}
+.form-ul input[type='submit'],
+.form-ul input[type='button'] {
+  background: #4b99ad;
+  padding: 8px 15px 8px 15px;
+  border: none;
+  color: #fff;
+}
+.form-ul input[type='submit']:hover,
+.form-ul input[type='button']:hover {
+  background: #4691a4;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+}
+.form-ul .required {
+  color: red;
+}

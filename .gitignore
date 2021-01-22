@@ -1,5 +1,5 @@
 node_modules
 t
-lib
+./lib
 dist
 
