@@ -1,12 +1,13 @@
 import $rdf from 'rdf-ext';
 
 import { TYPE, EVENT, START_DATE, LOCATION, DATETIME, NAME } from './ns';
-import { EventShacl } from './ttl/event-shacl.ttl';
+import { EventShacl } from './shacl/event-shacl.ttl';
 
 import { Validator } from './Validator';
 
+const ttlShacl = {ttl: EventShacl};
 it('validates', async () => {
-  const validator = new Validator(EventShacl);
+  const validator = new Validator(ttlShacl);
   const dataset = $rdf.dataset();
   const form = $rdf.blankNode();
 
@@ -19,7 +20,7 @@ it('validates', async () => {
 });
 
 it('fails validation for missing name and startDate', async () => {
-  const validator = new Validator(EventShacl);
+  const validator = new Validator(ttlShacl);
   const dataset = $rdf.dataset();
   const form = $rdf.blankNode();
 
@@ -33,7 +34,7 @@ it('fails validation for missing name and startDate', async () => {
 });
 
 it('fails validation for too short name', async () => {
-  const validator = new Validator(EventShacl);
+  const validator = new Validator(ttlShacl);
   const dataset = $rdf.dataset();
   const form = $rdf.blankNode();
 

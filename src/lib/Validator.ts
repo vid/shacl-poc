@@ -2,35 +2,41 @@ import SHACLValidator from 'rdf-validate-shacl';
 import factory from 'rdf-ext';
 import Dataset from 'rdf-ext/lib/Dataset';
 
-import { loadN3FromString } from './util';
+import { convertJsonLDtoDataset, convertQuadsToDataset, loadN3FromString } from './util';
+
+type ttl = Text;
+type jsonld = object;
+
+export type TSHACL = { ttl?: string; jsonld?: object };
 
 export class Validator {
   validator = undefined;
 
-  shapes: Dataset;
+  nodeShapes: Dataset;
 
-  shapeTTL: string;
+  shacl: TSHACL;
 
-  constructor(shapeTTL) {
-    this.shapeTTL = shapeTTL;
+  constructor(shacl: TSHACL) {
+    this.shacl = shacl;
   }
 
   private async getValidator() {
     if (this.validator) {
       return this.validator;
     }
-    const shapes = await this.getShapes();
+    const shapes = await this.getNodeShapes();
     const validator = new SHACLValidator(shapes, { factory });
     this.validator = validator;
     return validator;
   }
 
-  async getShapes(): Promise<Dataset> {
-    if (this.shapes) {
-      return this.shapes;
+  async getNodeShapes(): Promise<Dataset> {
+    if (this.nodeShapes) {
+      return this.nodeShapes;
     }
-    const shapes = await loadN3FromString(this.shapeTTL);
-    this.shapes = shapes;
+    const inp = this.shacl.ttl ? convertQuadsToDataset : convertJsonLDtoDataset;
+    const shapes = await inp(this.shacl[Object.keys(this.shacl)[0]]);
+    this.nodeShapes = shapes;
     return shapes;
   }
 

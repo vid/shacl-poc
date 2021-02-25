@@ -1,4 +1,6 @@
-export const EventShacl = `@prefix dash: <http://datashapes.org/dash#> .
+export const EventShacl = `
+
+@prefix dash: <http://datashapes.org/dash#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema: <http://schema.org/> .
@@ -9,7 +11,11 @@ export const EventShacl = `@prefix dash: <http://datashapes.org/dash#> .
 my:EventShape
   a sh:NodeShape ;
   sh:targetClass schema:Event ;
-  sh:property my:NameShape, my:StartDateShape, my:LocationShape ;
+  sh:property my:NameShape, my:StartDateShape ;
+  sh:xone (
+    [sh:property my:LocationShape]
+    [sh:property my:PlaceShape]
+    ) 
 .
 
 my:NameShape 
@@ -33,7 +39,7 @@ my:StartDateShape
   sh:order 2;
 .
 
-my:LocationShape 
+my:LocationTextShape 
   sh:path schema:location ;
   sh:datatype xsd:string ;
   sh:minCount 1 ;
@@ -43,4 +49,34 @@ my:LocationShape
   sh:description "Location";
   sh:order 3;
 . 
+
+my:LocationPlaceShape 
+  sh:path schema:location ;
+  sh:datatype xsd:string ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:minLength 4;
+  sh:maxLength 72;
+  sh:description "Location";
+  sh:order 3;
+. 
+
+my:PlaceShape
+  a sh:NodeShape;
+  sh:targetClass schema:Place;
+  sh:property my:Address, my:name;
+.
+
+my:AddressShape 
+  sh:path schema:address ;
+  sh:datatype xsd:string ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:minLength 4;
+  sh:maxLength 72;
+  sh:description "Location";
+  sh:order 3;
+. 
+
+
 `;

@@ -1,7 +1,7 @@
 import { hot } from 'react-hot-loader';
 import React from 'react';
-import Form from './Form';
+import FormContainer from './FormContainer';
 
-const App = () => <Form />;
+const App = () => <FormContainer />;
 
 export default hot(module)(App);

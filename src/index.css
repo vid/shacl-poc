@@ -10,9 +10,12 @@ body {
 
 .form-ul {
   margin: 10px auto;
-  max-width: 400px;
+  /* max-width: 400px; */
   padding: 20px 12px 10px 20px;
   font: 13px 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+}
+.form-narrow {
+  max-width: 400px;
 }
 .form-ul li {
   padding: 0;
@@ -82,6 +85,13 @@ select {
   padding: 8px 15px 8px 15px;
   border: none;
   color: #fff;
+}
+.form-ul button {
+  background: #4b99ad;
+  padding: 8px 15px 8px 15px;
+  border: none;
+  color: #fff;
+  margin-left: 8px;
 }
 .form-ul input[type='submit']:hover,
 .form-ul input[type='button']:hover {
