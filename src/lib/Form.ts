@@ -27,11 +27,6 @@ export class Form {
   async getFields(): Promise<FormField[]> {
     const shapes = await this.validator.getNodeShapes();
     const focusNodes: Quad[] = shapes.match(undefined, TYPE, NODE_SHAPE).toArray();
-    console.log(
-      'fn',
-      focusNodes.length,
-      focusNodes.slice(0, 4).map((f) => f.subject.value)
-    );
 
     const focusNode = focusNodes[0];
 
@@ -40,7 +35,6 @@ export class Form {
       const { object: property } = p;
 
       const properties = shapes.match(property);
-      console.log('p', property, properties.toArray());
 
       const tryProperty = (predicate) => {
         const a = properties.match(undefined, predicate).toArray();
@@ -71,7 +65,6 @@ export class Form {
         return;
       }
       const field = fields.find((f) => f.key === k);
-      console.log('fd', formData, k, field, '##', fields);
       const { dataType, path } = field;
       // default date needs some transformation
       const pre = dataType?.equals(DATETIME) ? formDateToIso(v) : v;

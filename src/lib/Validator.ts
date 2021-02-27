@@ -2,7 +2,7 @@ import SHACLValidator from 'rdf-validate-shacl';
 import factory from 'rdf-ext';
 import Dataset from 'rdf-ext/lib/Dataset';
 
-import { convertJsonLDtoDataset, convertQuadsToDataset, loadN3FromString } from './util';
+import { convertJsonLDtoDataset, convertQuadsToDataset } from './util';
 
 type ttl = Text;
 type jsonld = object;
