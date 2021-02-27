@@ -5,12 +5,13 @@ import { DevTool } from '@hookform/devtools';
 
 import { Form, FormField } from './lib/Form';
 import { DATETIME } from './lib/ns';
-import FormDebug from './FormEdit';
+import FormEdit from './FormEdit';
 import { EventShacl } from './lib/shacl/event-shacl.ttl';
 
 export default () => {
   const [shacl, setShacl] = useState({ ttl: EventShacl });
   const [form, setForm] = useState<Form | undefined>();
+  const [parseError, setParseError] = useState<Error>();
   const [nodeShapes, setNodeShapes] = useState<FormField[] | undefined>();
 
   const [result, setResult] = useState(<span />);
@@ -20,10 +21,14 @@ export default () => {
 
   useEffect(() => {
     async function setup() {
+      try {
       const form = new Form(shacl);
       const nodeShapes = await form.getFields();
       setForm(form);
       setNodeShapes(nodeShapes);
+      } catch (e) {
+        setParseError(e);
+      }
     }
     setup();
   }, [shacl]);
@@ -84,7 +89,7 @@ export default () => {
       </form>
 
       <div style={{ padding: '50px' }}>
-        <FormDebug shacl={form.validator.shacl.ttl} changeShacl={changeShacl} defaultShacl={EventShacl} />
+        <FormEdit shacl={form.validator.shacl.ttl} changeShacl={changeShacl} defaultShacl={EventShacl} parseError={parseError} />
       </div>
       <DevTool control={control} />
     </>

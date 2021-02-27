@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-export default ({ shacl, defaultShacl, changeShacl }: { shacl: string; changeShacl: any; defaultShacl: string }) => {
+export default ({ shacl, defaultShacl, changeShacl, parseError }: { shacl: string; changeShacl: any; defaultShacl: string, parseError: Error }) => {
   const shaclLines = (shacl) => shacl?.split('\n').length;
   const [lines, setLines] = useState(shaclLines(defaultShacl));
   const { register, handleSubmit } = useForm();
@@ -25,6 +25,7 @@ export default ({ shacl, defaultShacl, changeShacl }: { shacl: string; changeSha
     setLines(lines);
     document.getElementById('ln').scrollTop = document.getElementById('shacl').scrollTop;
   };
+  (window as any).e = parseError;
   
   return (
     <>
@@ -36,6 +37,7 @@ export default ({ shacl, defaultShacl, changeShacl }: { shacl: string; changeSha
           </select>
           <button>Update</button>
           <button onClick={resetForm}>Reset</button>
+          {parseError && <div className='parse-error'>{parseError.message}</div>}
 
           <div style={{ position: 'relative', marginTop: '8px' }}>
             <textarea id="ln" readOnly style={{ position: 'absolute', top: 0, width: 65, left: 0, textAlign: 'right', background: 'lightgrey' }} rows={30} 

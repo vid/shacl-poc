@@ -2,6 +2,13 @@ body {
   font-family: 'Google Sans', Roboto, Arial, sans-serif;
 }
 
+.parse-error {
+  display: inline;
+  margin-left: 8px;
+  color: red;
+  font-weight: bold;
+}
+
 .form-notify {
   padding: 5px;
 }

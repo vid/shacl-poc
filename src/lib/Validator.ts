@@ -35,9 +35,13 @@ export class Validator {
       return this.nodeShapes;
     }
     const inp = this.shacl.ttl ? convertQuadsToDataset : convertJsonLDtoDataset;
-    const shapes = await inp(this.shacl[Object.keys(this.shacl)[0]]);
-    this.nodeShapes = shapes;
-    return shapes;
+    try {
+      const shapes = await inp(this.shacl[Object.keys(this.shacl)[0]]);
+      this.nodeShapes = shapes;
+      return shapes;
+    } catch (e) {
+      throw e;
+    }
   }
 
   async validate(formData: Dataset) {
