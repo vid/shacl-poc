@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { convertQuadsToDataset, convertJsonLDtoDataset, convertDatasetToTurtle, convertJsonLDToTurtle, convertTurtleToJsonLD } from './lib/util';
+import { convertN3ToDataset, convertJsonLDtoDataset, convertDatasetToTurtle, convertJsonLDToTurtle, convertTurtleToJsonLD } from './lib/util';
 
 export default ({ shacl, defaultShacl, changeShacl, parseError }: { shacl: string; changeShacl: any; defaultShacl: string; parseError: Error }) => {
   const shaclLines = (shacl) => shacl?.split('\n').length;

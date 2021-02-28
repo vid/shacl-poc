@@ -4,7 +4,7 @@ import { LOCATION, START_DATE } from './ns';
 const jsonShacl = { ttl: EventShacl };
 const shaclInput = jsonShacl;
 
-it.only('gets fields', async () => {
+it('gets fields', async () => {
   const form = new Form(shaclInput);
   const fields = await form.getFields();
 

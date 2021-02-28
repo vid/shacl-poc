@@ -16,7 +16,7 @@ export async function loadN3FromString(ttl) {
   return $rdf.dataset().import(parser.import(str(ttl)));
 }
 
-export async function convertQuadsToDataset(quadsText): Promise<Dataset> {
+export async function convertN3ToDataset(quadsText): Promise<Dataset> {
   const quads = await loadN3FromString(quadsText);
   return quads;
 }
@@ -48,7 +48,7 @@ export function convertDatasetToTurtle(ds: Dataset, prefixes?): string {
   return decl + '.\n\n' + writer.quadsToString(ds.toArray());
 }
 
-export function contextFromTurtle(ttl) {
+export function getContextFromTurtle(ttl) {
   const re = RegExp(/@prefix .*?>/, 'img');
   const matches = ttl.match(re);
   const context = matches.reduce((a, m) => {
@@ -60,8 +60,8 @@ export function contextFromTurtle(ttl) {
 }
 
 export async function convertTurtleToJsonLD(ttl) {
-  const context = contextFromTurtle(ttl);
-  const dataset = await convertQuadsToDataset(ttl);
+  const context = getContextFromTurtle(ttl);
+  const dataset = await convertN3ToDataset(ttl);
   return await serialize(dataset.toArray(), context);
 }
 

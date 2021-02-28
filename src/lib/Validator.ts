@@ -2,7 +2,7 @@ import SHACLValidator from 'rdf-validate-shacl';
 import factory from 'rdf-ext';
 import Dataset from 'rdf-ext/lib/Dataset';
 
-import { convertJsonLDtoDataset, convertQuadsToDataset } from './util';
+import { convertJsonLDtoDataset, convertN3ToDataset } from './util';
 
 type ttl = Text;
 type jsonld = object;
@@ -34,7 +34,7 @@ export class Validator {
     if (this.nodeShapes) {
       return this.nodeShapes;
     }
-    const inp = this.shacl.ttl ? convertQuadsToDataset : convertJsonLDtoDataset;
+    const inp = this.shacl.ttl ? convertN3ToDataset : convertJsonLDtoDataset;
     try {
       const shapes = await inp(this.shacl[Object.keys(this.shacl)[0]]);
       this.nodeShapes = shapes;

@@ -16,7 +16,7 @@ const shapeContext = {
 };
 
 it('gets context from Turtle', () => {
-  const context = util.contextFromTurtle(shapeTTL);
+  const context = util.getContextFromTurtle(shapeTTL);
   expect(context).toEqual(shapeContext)
 });
 
@@ -27,7 +27,7 @@ it('loads from string', async () => {
 
 it('converts quads to n3', async () => {
   const quadsText = `<http://example.org/subject> <http://example.org/predicate> "object" <http://example.org/graph> .`;
-  const dataset = await util.convertQuadsToDataset(quadsText);
+  const dataset = await util.convertN3ToDataset(quadsText);
   expect(dataset).toBeDefined();
 });
 
@@ -38,7 +38,7 @@ it('converts jsonld to dataset', async () => {
 
 it('converts dataset to Turtle', async () => {
   const quadsText = `<http://example.org/subject> <http://example.org/predicate> "object" <http://example.org/graph> .`;
-  const dataset = await util.convertQuadsToDataset(quadsText);
+  const dataset = await util.convertN3ToDataset(quadsText);
   const res = util.convertDatasetToTurtle(dataset, { ex: 'http://example.org/' });
 
   expect(res).toBeDefined();
