@@ -7,9 +7,10 @@ import { Form, FormField } from './lib/Form';
 import { DATETIME } from './lib/ns';
 import FormEdit from './FormEdit';
 import { EventShacl } from './lib/shacl/event-shacl.ttl';
+import { TSHACL, TYPES } from './lib/defs';
 
 export default () => {
-  const [shacl, setShacl] = useState({ ttl: EventShacl });
+  const [shacl, setShacl] = useState<TSHACL>({ type: TYPES.TTL, text: EventShacl });
   const [form, setForm] = useState<Form | undefined>();
   const [parseError, setParseError] = useState<Error>();
   const [nodeShapes, setNodeShapes] = useState<FormField[] | undefined>();
@@ -22,10 +23,11 @@ export default () => {
   useEffect(() => {
     async function setup() {
       try {
-      const form = new Form(shacl);
-      const nodeShapes = await form.getFields();
-      setForm(form);
-      setNodeShapes(nodeShapes);
+        setParseError(undefined);
+        const form = new Form(shacl);
+        const nodeShapes = await form.getFields();
+        setForm(form);
+        setNodeShapes(nodeShapes);
       } catch (e) {
         setParseError(e);
       }
@@ -33,7 +35,7 @@ export default () => {
     setup();
   }, [shacl]);
 
-  const changeShacl = async (newShacl) => {
+  const changeShacl = async (newShacl: TSHACL) => {
     setShacl(newShacl);
     handleSubmit(doValidate);
   };
@@ -43,7 +45,7 @@ export default () => {
   const inputs = nodeShapes.map((f: FormField) => {
     const { key, description, path, dataType } = f;
     if (dataType === undefined) {
-      return <textarea readOnly key={key} value={`No data type\n${JSON.stringify(f, null, 2)}`} />
+      return <textarea readOnly key={key} value={`No data type\n${JSON.stringify(f, null, 2)}`} />;
     }
 
     let error;
@@ -74,7 +76,7 @@ export default () => {
         </span>
       )
     );
-    console.log('validation result', res);
+    console.info('validation result', res);
     setValidationErrors(res);
   };
   return (
@@ -89,7 +91,7 @@ export default () => {
       </form>
 
       <div style={{ padding: '50px' }}>
-        <FormEdit shacl={form.validator.shacl.ttl} changeShacl={changeShacl} defaultShacl={EventShacl} parseError={parseError} />
+        <FormEdit changeShacl={changeShacl} defaultShacl={EventShacl} parseError={parseError} setParseError={setParseError} />
       </div>
       <DevTool control={control} />
     </>

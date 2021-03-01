@@ -1,7 +1,9 @@
 import { Form } from './Form';
 import { EventShacl } from './shacl/event-shacl.ttl';
 import { LOCATION, START_DATE } from './ns';
-const jsonShacl = { ttl: EventShacl };
+import { TYPES } from './defs';
+
+const jsonShacl = { type: TYPES.TTL, text: EventShacl };
 const shaclInput = jsonShacl;
 
 it('gets fields', async () => {

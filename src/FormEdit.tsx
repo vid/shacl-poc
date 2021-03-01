@@ -1,54 +1,76 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { convertN3ToDataset, convertJsonLDtoDataset, convertDatasetToTurtle, convertJsonLDToTurtle, convertTurtleToJsonLD } from './lib/util';
+import { convertBetween } from './lib/util';
+import { TSHACL, TYPES } from './lib/defs';
 
-export default ({ shacl, defaultShacl, changeShacl, parseError }: { shacl: string; changeShacl: any; defaultShacl: string; parseError: Error }) => {
-  const shaclLines = (shacl) => shacl?.split('\n').length;
+export default ({
+  defaultShacl,
+  changeShacl,
+  parseError,
+  setParseError,
+}: {
+  setParseError: (any) => void;
+  changeShacl: (shacl: TSHACL) => void;
+  defaultShacl: string;
+  parseError: Error;
+}) => {
+  const shaclLines = (text) => text?.split('\n').length;
   const [lines, setLines] = useState(shaclLines(defaultShacl));
-  const [currentType, setCurrentType] = useState('ttl');
+  const [currentType, setCurrentType] = useState(TYPES.TTL);
   const { register, handleSubmit } = useForm();
 
-  const transformThenChangeShacl = async (text: string, format) => {
-    if (format === 'ttl') {
-      changeShacl({ ttl: text });
-    } else {
-      changeShacl({ jsonld: JSON.parse(text) });
-    }
-  };
-  const resetForm = () => {
-    getInput().value = defaultShacl;
-    (document.getElementById('format') as HTMLInputElement).value = 'ttl';
-    syncLines();
-  };
-  const getInput = () => document.getElementById('shacl') as HTMLInputElement;
+  const TTL_EVENT = 'ttlevent';
+  const INPUT_TEXT = 'itext';
+  const INPUT_TYPE = 'itype';
 
-  const changeFormat = async (convertTo) => {
-    const input = getInput().value;
-    setCurrentType(convertTo);
-    if (currentType === 'ttl' && convertTo === 'jsonld') {
-      getInput().value = JSON.stringify(await convertTurtleToJsonLD(input), null, 2);
-    } else if (currentType === 'jsonld' && convertTo === 'ttl') {
-      getInput().value = await convertJsonLDToTurtle(JSON.parse(input));
-    }
-  };
+  const getInput = (which) => document.getElementById(which) as HTMLInputElement;
 
   const syncLines = () => {
-    const shacl = getInput().value;
-    const lines = shaclLines(shacl);
-    setLines(lines);
-    document.getElementById('ln').scrollTop = document.getElementById('shacl').scrollTop;
+    const shacl = getInput(INPUT_TEXT).value;
+    setLines(shaclLines(shacl));
+    document.getElementById('ln').scrollTop = document.getElementById(INPUT_TEXT).scrollTop;
+  };
+
+  const selectType = async (convertTo) => {
+    setParseError(null);
+    if (convertTo === TTL_EVENT) {
+      getInput(INPUT_TEXT).value = defaultShacl;
+      getInput(INPUT_TYPE).value = TYPES.TTL;
+      setCurrentType(TYPES.TTL);
+    } else {
+      const input = getInput(INPUT_TEXT).value;
+      setCurrentType(convertTo);
+      if (input) {
+        try {
+          const value = await convertBetween(currentType, convertTo, input);
+          getInput(INPUT_TEXT).value = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+        } catch (e) {
+          setParseError(e);
+          getInput(INPUT_TYPE).value = currentType;
+          setCurrentType(currentType);
+          console.error(e);
+        }
+      }
+    }
+    syncLines();
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit((d) => transformThenChangeShacl(d.shacl, d.format))}>
+      <form onSubmit={handleSubmit((d) => changeShacl({ type: getInput(INPUT_TYPE).value as TYPES, text: getInput(INPUT_TEXT).value }))}>
         <ul className="form-ul">
-          <select onChange={(ev) => changeFormat(ev.target.value)} id="format" name="format" ref={register}>
-            <option value="ttl">Turtle</option>
-            <option value="jsonld">JSON-LD</option>
+          <select onChange={(ev) => selectType(ev.target.value)} id={INPUT_TYPE} name={INPUT_TYPE} ref={register}>
+            <optgroup label="Types">
+              <option value={TYPES.TTL}>Turtle</option>
+              <option value={TYPES.JSONLD}>JSON-LD</option>
+              <option value={TYPES.QUADS}>Quads</option>
+              <option value={TYPES.DS_ARRAY}>Dataset Array</option>
+            </optgroup>
+            <optgroup label="Defaults">
+              <option value={TTL_EVENT}>Turtle Event</option>
+            </optgroup>
           </select>
-          <button>Update</button>
-          <button onClick={resetForm}>Reset</button>
+          <button type="submit">Update</button>
           {parseError && <div className="parse-error">{parseError.message}</div>}
 
           <div style={{ position: 'relative', marginTop: '8px' }}>
@@ -60,14 +82,14 @@ export default ({ shacl, defaultShacl, changeShacl, parseError }: { shacl: strin
               value={[...Array(lines)].map((x, i) => i + 1).join('\n')}
             />
             <textarea
-              id="shacl"
+              id={INPUT_TEXT}
               onChange={syncLines}
               onScroll={syncLines}
-              name="shacl"
+              name={INPUT_TEXT}
               ref={register}
               style={{ position: 'absolute', top: 0, width: '70%', left: 50, whiteSpace: 'pre', overflowWrap: 'normal', overflowX: 'scroll' }}
               rows={30}
-              defaultValue={shacl}
+              defaultValue={defaultShacl}
             />
           </div>
         </ul>

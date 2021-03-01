@@ -1,23 +1,19 @@
+import $rdf from 'rdf-ext';
 import SHACLValidator from 'rdf-validate-shacl';
-import factory from 'rdf-ext';
 import Dataset from 'rdf-ext/lib/Dataset';
 
-import { convertJsonLDtoDataset, convertN3ToDataset } from './util';
-
-type ttl = Text;
-type jsonld = object;
-
-export type TSHACL = { ttl?: string; jsonld?: object };
+import { convertFrom } from './util';
+import { TSHACL } from './defs';
 
 export class Validator {
   validator = undefined;
 
   nodeShapes: Dataset;
 
-  shacl: TSHACL;
+  shaclInput: TSHACL;
 
-  constructor(shacl: TSHACL) {
-    this.shacl = shacl;
+  constructor(shaclInput: TSHACL) {
+    this.shaclInput = shaclInput;
   }
 
   private async getValidator() {
@@ -25,7 +21,7 @@ export class Validator {
       return this.validator;
     }
     const shapes = await this.getNodeShapes();
-    const validator = new SHACLValidator(shapes, { factory });
+    const validator = new SHACLValidator(shapes, { $rdf });
     this.validator = validator;
     return validator;
   }
@@ -34,14 +30,10 @@ export class Validator {
     if (this.nodeShapes) {
       return this.nodeShapes;
     }
-    const inp = this.shacl.ttl ? convertN3ToDataset : convertJsonLDtoDataset;
-    try {
-      const shapes = await inp(this.shacl[Object.keys(this.shacl)[0]]);
-      this.nodeShapes = shapes;
-      return shapes;
-    } catch (e) {
-      throw e;
-    }
+    const { type, text } = this.shaclInput;
+
+    const { dataset } = await convertFrom(type, text);
+    return dataset;
   }
 
   async validate(formData: Dataset) {

@@ -5,7 +5,8 @@ import Quad from 'rdf-ext/lib/Quad';
 
 import { TYPE, NODE_SHAPE, PROPERTY_SHAPE, PATH_SHAPE, DATATYPE_SHAPE, EVENT, DATETIME, ORDER_SHAPE, DESCRIPTION_SHAPE } from './ns';
 import { formDateToIso } from './util';
-import { TSHACL, Validator } from './Validator';
+import { TSHACL } from './defs';
+import { Validator } from './Validator';
 
 export type FormField = {
   key: string;

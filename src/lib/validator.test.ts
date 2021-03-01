@@ -3,9 +3,10 @@ import $rdf from 'rdf-ext';
 import { TYPE, EVENT, START_DATE, LOCATION, DATETIME, NAME } from './ns';
 import { EventShacl } from './shacl/event-shacl.ttl';
 
-import { Validator } from './Validator';
+import { TSHACL, TYPES } from './defs';
+import {  Validator } from './Validator';
 
-const ttlShacl = {ttl: EventShacl};
+const ttlShacl: TSHACL = { type: TYPES.TTL, text: EventShacl };
 it('validates', async () => {
   const validator = new Validator(ttlShacl);
   const dataset = $rdf.dataset();
