@@ -5,14 +5,10 @@ import { DevTool } from '@hookform/devtools';
 
 import { Form, FormField } from './lib/Form';
 import { DATETIME } from './lib/ns';
-import FormEdit from './FormEdit';
-import { EventShacl } from './lib/shacl/event-shacl.ttl';
-import { TSHACL, TYPES } from './lib/defs';
+import { TSHACL } from './lib/defs';
 
-export default () => {
-  const [shacl, setShacl] = useState<TSHACL>({ type: TYPES.TTL, text: EventShacl });
+export default ({ shacl, setParseError }: { shacl: TSHACL; setParseError: (Error) => void }) => {
   const [form, setForm] = useState<Form | undefined>();
-  const [parseError, setParseError] = useState<Error>();
   const [nodeShapes, setNodeShapes] = useState<FormField[] | undefined>();
 
   const [result, setResult] = useState(<span />);
@@ -20,25 +16,36 @@ export default () => {
 
   const { register, control, handleSubmit } = useForm({ mode: 'onChange' });
 
+  const doValidate = async (d) => {
+    const res = await form.validate(d, nodeShapes);
+    setResult(
+      res ? (
+        <span />
+      ) : (
+        <span className="form-notify" role="img" aria-label="Validation succeeded">
+          😄
+        </span>
+      )
+    );
+    console.info('validation result', res);
+    setValidationErrors(res);
+  };
   useEffect(() => {
     async function setup() {
       try {
         setParseError(undefined);
-        const form = new Form(shacl);
-        const nodeShapes = await form.getFields();
-        setForm(form);
-        setNodeShapes(nodeShapes);
+        const newForm = new Form(shacl);
+        const newNodeShapes = await newForm.getFields();
+        setForm(newForm);
+        setNodeShapes(newNodeShapes);
       } catch (e) {
         setParseError(e);
+        console.error(e);
       }
+      handleSubmit(doValidate);
     }
     setup();
   }, [shacl]);
-
-  const changeShacl = async (newShacl: TSHACL) => {
-    setShacl(newShacl);
-    handleSubmit(doValidate);
-  };
 
   if (!nodeShapes) return <h1>Rendering</h1>;
 
@@ -65,20 +72,6 @@ export default () => {
       </div>
     );
   });
-  const doValidate = async (d) => {
-    const res = await form.validate(d, nodeShapes);
-    setResult(
-      res ? (
-        <span />
-      ) : (
-        <span className="form-notify" role="img" aria-label="Validation succeeded">
-          😄
-        </span>
-      )
-    );
-    console.info('validation result', res);
-    setValidationErrors(res);
-  };
   return (
     <>
       <form onSubmit={handleSubmit(doValidate)}>
@@ -89,10 +82,6 @@ export default () => {
           {result}
         </ul>
       </form>
-
-      <div style={{ padding: '50px' }}>
-        <FormEdit changeShacl={changeShacl} defaultShacl={EventShacl} parseError={parseError} setParseError={setParseError} />
-      </div>
       <DevTool control={control} />
     </>
   );
